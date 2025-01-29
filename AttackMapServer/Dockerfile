@@ -2,7 +2,7 @@ FROM python:3.13
 
 WORKDIR /opt/bbts/app
 
-COPY ../requirements.txt .
+COPY ./requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
