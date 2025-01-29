@@ -1,0 +1,52 @@
+services:
+  attack_map_server:
+    build:
+      context: .
+      dockerfile: AttackMapServer/Dockerfile
+    container_name: attack_map_server
+    ports:
+      - "64299:64299"
+    depends_on:
+      - redis
+    networks:
+      - attack_map_network
+    environment:
+      - REDIS_HOST=map_redis
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./AttackMapServer:/opt/bbts/app
+    restart: unless-stopped
+
+  data_server:
+    build:
+      context: .
+      dockerfile: DataServer/Dockerfile
+    container_name: data_server
+    depends_on:
+      - redis
+    networks:
+      - attack_map_network
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=map_redis
+      - TZ=America/Sao_Paulo
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: map_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - attack_map_network
+    restart: unless-stopped
+
+networks:
+  attack_map_network:
+    driver: bridge
+
+volumes:
+  redis_data:

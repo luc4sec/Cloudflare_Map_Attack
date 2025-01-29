@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudFlare Map Attack</title>
+    
+    <!-- Improved CSP with better security -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' ws: wss:;
+        font-src 'self' https://cdnjs.cloudflare.com;
+    ">
+    
+    <!-- External Resources -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.css">
+    
+    <style>
+        /* Custom Scrollbar Styling */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* General Styles */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: #fff;
+        }
+        
+        #map {
+            height: 77vh;
+            width: 100%;
+            z-index: 1;
+            background: transparent !important;
+        }
+        
+        /* Remove leaflet attribution */
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+        
+        #informIP {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 4px;
+            color: #fff;
+        }
+        
+        .dashboard {
+            height: 40vh;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 15px;
+        }
+        
+        .table {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            color: #fff;
+            background: transparent;
+        }
+        
+        .table thead th {
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+        
+        .table td {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: transparent;
+            padding: 8px;
+        }
+        
+        .table-container {
+            max-height: calc(40vh - 30px);
+            overflow-y: auto;
+            background: transparent;
+        }
+        
+        .circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            /* display: inline-block; */
+            vertical-align: middle;
+        }
+        
+        /* Table hover effect */
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Flag images */
+        .table img {
+            width: 24px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        
+        /* Remove bootstrap table borders */
+        .table > :not(caption) > * > * {
+            border-bottom-width: 1px;
+            border-color: rgba(255, 255, 255, 0.1);
+            background: transparent;
+        }
+        
+        /* Ensure text is visible */
+        .table td, .table th {
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Remove any Bootstrap background colors */
+        .table-sm td, .table-sm th {
+            background-color: transparent !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <!-- <div id="informIP"></div> -->
+    
+    <div class="dashboard">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="table-container">
+                        <table class="table table-sm" id="ip-origin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%">Hits</th>
+                                    <th style="width:20%"></th>
+                                    <th style="width:60%">IP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ip-tracking"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="table-container">
+                        <table class="table table-sm" id="country-origin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%">Hits</th>
+                                    <th style="width:20%"></th>
+                                    <th style="width:60%">Country</th>
+                                </tr>
+                            </thead>
+                            <tbody id="country-tracking"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="table-container">
+                        <table class="table table-sm" id="host-origin-table">
+                            <thead>
+                                <tr>
+                                    <th>Hits</th>
+                                    <th>Host</th>
+                                </tr>
+                            </thead>
+                            <tbody id="host-tracking"></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="col-md-5">
+                    <div class="table-container">
+                        <table class="table table-sm" id="live-attacks-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>IP</th>
+                                    <th></th>
+                                    <th>Country</th>
+                                    <th>Host</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attack-tracking"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.3/luxon.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/1.6.0/Control.FullScreen.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="static/websocket.js" defer></script>
+    <script src="static/map.js" defer></script>
+</body>
+</html>
