@@ -179,7 +179,7 @@ def retry_connection(ws, max_retries=5, initial_delay=1):
             delay *= 2  # Backoff exponencial
     
     print("[CRITICAL] Máximo de tentativas de reconexão atingido!")
-    exit()
+    os._exit(1)
 
 def update_attack_data():
     zones = [
