@@ -1,5 +1,5 @@
 function connectWebSocket() {
-    var ws_url = 'ws://' + window.location.hostname + '/websocket';
+    var ws_url = 'ws://' + window.location.hostname + '/websocket'; // ":8083" +
     console.log("Connecting to WebSocket:", ws_url);
     
     var ws = new WebSocket(ws_url);

@@ -458,7 +458,7 @@ const messageHandlers = {
 function connectWebSocket() {
     // Usar ws:// para HTTP e wss:// para HTTPS
     var protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-    var ws_url = protocol + window.location.hostname + '/websocket';
+    var ws_url = protocol + window.location.hostname + '/websocket'; // ":8083" +
     console.log("Connecting to WebSocket:", ws_url);
     
     var ws = new WebSocket(ws_url);
