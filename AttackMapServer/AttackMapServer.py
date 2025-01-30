@@ -7,6 +7,7 @@ Adjusted code for asyncio, aiohttp and redis (asynchronous support) by t3chn0m4g
 
 import asyncio
 import json
+import os
 
 import redis.asyncio as redis
 from aiohttp import web
@@ -14,7 +15,7 @@ from aiohttp import web
 # redis_url = 'redis://10.1.10.69:6379'
 redis_url = 'redis://map_redis:6379'
 web_port = 8083
-version = 'Attack Map Server 3 (CloudFlare Edition)'
+version = os.getenv('VERSION', '1.0.0')
 
 async def redis_subscriber(websockets):
     while True:

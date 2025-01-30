@@ -27,7 +27,7 @@ CLOUDFLARE_ACCOUNT_ID = os.environ['CLOUDFLARE_ACCOUNT_ID']
 redis_ip = 'map_redis'
 redis_instance = None
 redis_channel = 'attack-map-production'
-version = 'CloudFlare Data V1'
+version = os.getenv('VERSION', '1.0.0')
 local_tz = get_localzone()
 
 # Inicializa o leitor de GeoIP
