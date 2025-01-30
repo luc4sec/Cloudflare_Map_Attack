@@ -118,6 +118,7 @@ def process_cloudflare_data(data):
         # print(f"[DEBUG] Coordenadas: lat={geo.location.latitude}, long={geo.location.longitude}")
 
         # Garantir todos os campos necessários para o mapa
+        color = random.choice(service_rgb)
         alert = {
             "type": "Traffic",
             "honeypot": "Cloudflare",
@@ -133,7 +134,7 @@ def process_cloudflare_data(data):
             "src_port": 0,
             "protocol": "HTTPS",
             "event_time": datetime.datetime.now(pytz.UTC).strftime("%Y-%m-%d %H:%M:%S"),
-            "color": random.choice(service_rgb),
+            "color": color,
             "ip_rep": "Unknown",
             "dst_lat": -15.7801,  # Coordenadas do destino (Brasil)
             "dst_long": -47.9292,
