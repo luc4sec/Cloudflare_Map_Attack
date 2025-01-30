@@ -157,7 +157,6 @@ def process_cloudflare_data(data):
 def on_ws_close(ws, close_status_code, close_msg):
     print(f"[WARNING] WebSocket fechado: {close_status_code} - {close_msg}")
     retry_connection(ws)
-    exit()
 
 def on_ws_error(ws, error):
     print(f"[ERROR] Erro no WebSocket: {error}")
@@ -180,6 +179,7 @@ def retry_connection(ws, max_retries=5, initial_delay=1):
             delay *= 2  # Backoff exponencial
     
     print("[CRITICAL] Máximo de tentativas de reconexão atingido!")
+    exit()
 
 def update_attack_data():
     zones = [
