@@ -205,10 +205,10 @@ function addCircle(country, iso_code, src_ip, ip_rep, color, srcLatLng) {
     circleArray = circles.getLayers();
 
     // Only allow 100 circles to be on the map at a time
-    if (circleCount >= 1000) {
-        circles.removeLayer(circleArray[0]);
-        circlesObject = {};
-    }
+    // if (circleCount >= 1000) {
+    //     circles.removeLayer(circleArray[0]);
+    //     circlesObject = {};
+    // }
 
     var key = srcLatLng.lat + "," + srcLatLng.lng;
     // Only draw circle if its coordinates are not already present in circlesObject
