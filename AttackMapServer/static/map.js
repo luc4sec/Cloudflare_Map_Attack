@@ -232,10 +232,10 @@ function addMarker(dst_country_name, dst_iso_code, dst_ip, tpot_hostname, dstLat
     markerArray = markers.getLayers();
 
     // Only allow 50 markers to be on the map at a time
-    if (markerCount >= 50) {
-        markers.removeLayer(markerArray[0]);
-        markersObject = {};
-    }
+    // if (markerCount >= 50) {
+    //     markers.removeLayer(markerArray[0]);
+    //     markersObject = {};
+    // }
 
     var key = dstLatLng.lat + "," + dstLatLng.lng;
     // Only draw marker if its coordinates are not already present in markersObject
