@@ -42,24 +42,24 @@ countries_tracked = {}
 continent_tracked = {}
 
 # Color Codes for Attack Map
-service_rgb = {
-    'FTP': '#ff0000',
-    'SSH': '#ff8000',
-    'TELNET': '#ffff00',
-    'EMAIL': '#80ff00',
-    'SQL': '#00ff00',
-    'DNS': '#00ff80',
-    'HTTP': '#00ffff',
-    'HTTPS': '#0080ff',
-    'VNC': '#0000ff',
-    'SNMP': '#8000ff',
-    'SMB': '#bf00ff',
-    'MEDICAL': '#ff00ff',
-    'RDP': '#ff0060',
-    'SIP': '#ffccff',
-    'ADB': '#ffcccc',
-    'OTHER': '#ffffff'
-}
+colors = [
+    '#ff0000',
+    '#ff8000',
+    '#ffff00',
+    '#80ff00',
+    '#00ff00',
+    '#00ff80',
+    '#00ffff',
+    '#0080ff',
+    '#0000ff',
+    '#8000ff',
+    '#bf00ff',
+    '#ff00ff',
+    '#ff0060',
+    '#ffccff',
+    '#ffcccc',
+    '#ffffff'
+]
 
 def connect_redis(redis_ip):
     r = redis.StrictRedis(host=redis_ip, port=6379, db=0)
