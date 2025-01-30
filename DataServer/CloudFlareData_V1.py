@@ -157,6 +157,7 @@ def process_cloudflare_data(data):
 def on_ws_close(ws, close_status_code, close_msg):
     print(f"[WARNING] WebSocket fechado: {close_status_code} - {close_msg}")
     retry_connection(ws)
+    exit()
 
 def on_ws_error(ws, error):
     print(f"[ERROR] Erro no WebSocket: {error}")
