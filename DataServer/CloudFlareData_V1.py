@@ -5,6 +5,7 @@ import os
 import pytz
 import redis
 import ssl
+import random
 
 
 import urllib3
@@ -132,7 +133,7 @@ def process_cloudflare_data(data):
             "src_port": 0,
             "protocol": "HTTPS",
             "event_time": datetime.datetime.now(pytz.UTC).strftime("%Y-%m-%d %H:%M:%S"),
-            "color": service_rgb["HTTPS"],
+            "color": random.choice(service_rgb),
             "ip_rep": "Unknown",
             "dst_lat": -15.7801,  # Coordenadas do destino (Brasil)
             "dst_long": -47.9292,
