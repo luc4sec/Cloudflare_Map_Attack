@@ -205,7 +205,7 @@ function addCircle(country, iso_code, src_ip, ip_rep, color, srcLatLng) {
     circleArray = circles.getLayers();
 
     // Only allow 100 circles to be on the map at a time
-    if (circleCount >= 100) {
+    if (circleCount >= 1000) {
         circles.removeLayer(circleArray[0]);
         circlesObject = {};
     }
